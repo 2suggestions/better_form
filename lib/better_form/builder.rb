@@ -5,16 +5,16 @@ module BetterForm
     helpers = field_helpers - %w(label hidden_field fields_for)
     helpers.each do |name|
       define_method(name) do |field_name, *args|
-        options = args.last.is_a?(Hash) ? args.pop : {}
+        options = args.extract_options!
         label = options.delete(:label)
         if label == false
-          super(field_name, *args)
+          super(field_name, *(args << options))
         elsif label
-          generate_label(field_name, label) + super(field_name, *args)
+          generate_label(field_name, label) + super(field_name, *(args << options))
         elsif @template.label_all? == false
-          super(field_name, *args)
+          super(field_name, *(args << options))
         else
-          generate_label(field_name, label) + super(field_name, *args)
+          generate_label(field_name, label) + super(field_name, *(args << options))
         end
       end
     end
