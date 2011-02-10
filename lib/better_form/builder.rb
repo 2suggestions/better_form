@@ -9,6 +9,10 @@ module BetterForm
         label = options.delete(:label)
         if label == false
           super(field_name, *args)
+        elsif label
+          generate_label(field_name, label) + super(field_name, *args)
+        elsif @template.label_all? == false
+          super(field_name, *args)
         else
           generate_label(field_name, label) + super(field_name, *args)
         end
