@@ -31,10 +31,10 @@ module BetterForm
 
   private
     def generate_label(method, label)
-      if label
-        label_text = label
-      else
+      if label == true
         label_text = method.to_s.gsub(/_/, ' ').capitalize
+      else
+        label_text = label.to_s
       end
 
       label(method, label_text)
