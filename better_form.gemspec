@@ -1,8 +1,8 @@
-require File.expand_path("../lib/newgem/version", __FILE__)
+require File.expand_path("../lib/better_form/version", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'better_form'
-  s.version     = NewGem::VERSION
+  s.version     = BetterForm::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Nicholas Firth-McCoy']
   s.email       = ['nicholas@2suggestions.com.au']
