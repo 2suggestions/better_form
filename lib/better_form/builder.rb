@@ -2,7 +2,7 @@ module BetterForm
   class Builder < ActionView::Helpers::FormBuilder
     include ActionView::Helpers::UrlHelper
 
-    helpers = field_helpers - %w(label hidden_field fields_for)
+    helpers = field_helpers + %w(date_select datetime_select time_select collection_select select time_zone_select) - %w(label hidden_field fields_for)
     helpers.each do |name|
       define_method(name) do |field_name, *args|
         options = args.extract_options!
