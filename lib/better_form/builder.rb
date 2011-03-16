@@ -54,7 +54,7 @@ module BetterForm
           when ActiveModel::Validations::ExclusionValidator
             {}
           when ActiveModel::Validations::FormatValidator
-            { 'data-validates-format' => true, 'data-validates-format-with' => validator.options[:with] }
+            { 'data-validates-format' => true, 'data-validates-format-with' => validator.options[:with].inspect }
           when ActiveModel::Validations::InclusionValidator
             {}
           when ActiveModel::Validations::LengthValidator
