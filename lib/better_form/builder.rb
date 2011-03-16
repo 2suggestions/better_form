@@ -48,7 +48,9 @@ module BetterForm
       object._validators[attribute].each do |validator|
         validation = case validator
           when ActiveModel::Validations::AcceptanceValidator
-            { 'data-validates-acceptance' => true }
+            if validation_applies?(validator.options)
+              { 'data-validates-acceptance' => true }
+            end
           when ActiveModel::Validations::ConfirmationValidator
             {}
           when ActiveModel::Validations::ExclusionValidator
@@ -70,6 +72,14 @@ module BetterForm
       end
 
       validations
+    end
+
+    def validation_applies?(options)
+      case options[:on]
+        when :create then true if @object.new_record?
+        when :update then true if !@object.new_record?
+        else true
+      end
     end
   end
 end
