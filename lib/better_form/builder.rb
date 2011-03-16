@@ -23,7 +23,7 @@ module BetterForm
       value = options.delete(:value)
       cancel_url = options.delete(:cancel)
       if cancel_url
-        super(value, options) + 'or' + link_to('Cancel', cancel_url)
+        super(value, options) + "<span class='cancel'>or #{link_to('Cancel', cancel_url)}</span>".html_safe
       else
         super(value, options)
       end
