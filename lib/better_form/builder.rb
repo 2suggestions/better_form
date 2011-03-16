@@ -43,26 +43,33 @@ module BetterForm
     end
 
     def generate_validations(object, attribute)
-      validations = []
+      validations = {}
+      # Iterate over each validator for this attribute, and add the appropriate HTML5 data-* attributes
       object._validators[attribute].each do |validator|
-        case validator
+        validation = case validator
           when ActiveModel::Validations::AcceptanceValidator
+            {}
           when ActiveModel::Validations::ConfirmationValidator
+            {}
           when ActiveModel::Validations::ExclusionValidator
+            {}
           when ActiveModel::Validations::FormatValidator
+            {}
           when ActiveModel::Validations::InclusionValidator
+            {}
           when ActiveModel::Validations::LengthValidator
+            {}
           when ActiveModel::Validations::NumericalityValidator
+            {}
           when ActiveModel::Validations::PresenceValidator
-            validations <<  { 'data-validations-presence' => true }
+            { 'data-validations-presence' => true }
+          else
+            {}
         end
+        validations.merge!(validation)
       end
 
-      data_validations = {}
-      validations.each do |validation|
-        data_validations.merge!(validation)
-      end
-      data_validations
+      validations
     end
   end
 end
