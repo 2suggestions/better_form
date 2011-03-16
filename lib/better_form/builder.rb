@@ -60,7 +60,7 @@ module BetterForm
           when ActiveModel::Validations::LengthValidator
             {}
           when ActiveModel::Validations::NumericalityValidator
-            {}
+            { 'data-validations-numericality' => true }
           when ActiveModel::Validations::PresenceValidator
             { 'data-validations-presence' => true }
           else
