@@ -6,6 +6,8 @@ module BetterForm
     helpers.each do |name|
       define_method(name) do |field_name, *args|
         options = args.extract_options!
+        validations = generate_validations(@object, field_name)
+        options.merge!(validations)
         label = options.delete(:label)
         if label == false
           super(field_name, *(args << options))
@@ -38,6 +40,29 @@ module BetterForm
       end
 
       label(method, label_text)
+    end
+
+    def generate_validations(object, attribute)
+      validations = []
+      object._validators[attribute].each do |validator|
+        case validator
+          when ActiveModel::Validations::AcceptanceValidator
+          when ActiveModel::Validations::ConfirmationValidator
+          when ActiveModel::Validations::ExclusionValidator
+          when ActiveModel::Validations::FormatValidator
+          when ActiveModel::Validations::InclusionValidator
+          when ActiveModel::Validations::LengthValidator
+          when ActiveModel::Validations::NumericalityValidator
+          when ActiveModel::Validations::PresenceValidator
+            validations <<  { 'data-validations-presence' => true }
+        end
+      end
+
+      data_validations = {}
+      validations.each do |validation|
+        data_validations.merge!(validation)
+      end
+      data_validations
     end
   end
 end
