@@ -48,21 +48,21 @@ module BetterForm
       object._validators[attribute].each do |validator|
         validation = case validator
           when ActiveModel::Validations::AcceptanceValidator
-            { 'data-validations-acceptance' => true }
+            { 'data-validates-acceptance' => true }
           when ActiveModel::Validations::ConfirmationValidator
             {}
           when ActiveModel::Validations::ExclusionValidator
             {}
           when ActiveModel::Validations::FormatValidator
-            { 'data-validations-format' => true, 'data-validations-format-with' => validator.options[:with] }
+            { 'data-validates-format' => true, 'data-validates-format-with' => validator.options[:with] }
           when ActiveModel::Validations::InclusionValidator
             {}
           when ActiveModel::Validations::LengthValidator
             {}
           when ActiveModel::Validations::NumericalityValidator
-            { 'data-validations-numericality' => true }
+            { 'data-validates-numericality' => true }
           when ActiveModel::Validations::PresenceValidator
-            { 'data-validations-presence' => true }
+            { 'data-validates-presence' => true }
           else
             {}
         end
