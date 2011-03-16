@@ -48,7 +48,7 @@ module BetterForm
       object._validators[attribute].each do |validator|
         validation = case validator
           when ActiveModel::Validations::AcceptanceValidator
-            {}
+            { 'data-validations-acceptance' => true }
           when ActiveModel::Validations::ConfirmationValidator
             {}
           when ActiveModel::Validations::ExclusionValidator
