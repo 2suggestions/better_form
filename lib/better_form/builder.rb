@@ -52,17 +52,25 @@ module BetterForm
               { 'data-validates-acceptance' => true }
             end
           when ActiveModel::Validations::ConfirmationValidator
-            {}
+            if validation_applies?(validator.options)
+              {}
+            end
           when ActiveModel::Validations::ExclusionValidator
             {}
           when ActiveModel::Validations::FormatValidator
-            { 'data-validates-format' => true, 'data-validates-format-with' => validator.options[:with].inspect }
+            if validation_applies?(validator.options)
+              { 'data-validates-format' => true, 'data-validates-format-with' => validator.options[:with].inspect }
+            end
           when ActiveModel::Validations::InclusionValidator
             {}
           when ActiveModel::Validations::LengthValidator
-            {}
+            if validation_applies?(validator.options)
+              {}
+            end
           when ActiveModel::Validations::NumericalityValidator
-            { 'data-validates-numericality' => true }
+            if validation_applies?(validator.options)
+              { 'data-validates-numericality' => true }
+            end
           when ActiveModel::Validations::PresenceValidator
             { 'data-validates-presence' => true }
         end
