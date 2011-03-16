@@ -65,10 +65,8 @@ module BetterForm
             { 'data-validates-numericality' => true }
           when ActiveModel::Validations::PresenceValidator
             { 'data-validates-presence' => true }
-          else
-            {}
         end
-        validations.merge!(validation)
+        validations.merge!(validation ||= {})
       end
 
       validations
