@@ -6,6 +6,8 @@ module BetterForm
     helpers.each do |name|
       define_method(name) do |field_name, *args|
         options = args.extract_options!
+        validations = generate_validations(@object, field_name)
+        options.merge!(validations)
         label = options.delete(:label)
         if label == false
           super(field_name, *(args << options))
@@ -38,6 +40,56 @@ module BetterForm
       end
 
       label(method, label_text)
+    end
+
+    def generate_validations(object, attribute)
+      validations = {}
+
+      # Don't try to add validations for an object that doesn't have _validators
+      return {} unless object.respond_to?(:_validators)
+
+      # Iterate over each validator for this attribute, and add the appropriate HTML5 data-* attributes
+      object._validators[attribute].each do |validator|
+        validation = case validator
+          when ActiveModel::Validations::AcceptanceValidator
+            if validation_applies?(validator.options)
+              { 'data-validates-acceptance' => true }
+            end
+          when ActiveModel::Validations::ConfirmationValidator
+            if validation_applies?(validator.options)
+              {}
+            end
+          when ActiveModel::Validations::ExclusionValidator
+            {}
+          when ActiveModel::Validations::FormatValidator
+            if validation_applies?(validator.options)
+              { 'data-validates-format' => true, 'data-validates-format-with' => validator.options[:with].inspect }
+            end
+          when ActiveModel::Validations::InclusionValidator
+            {}
+          when ActiveModel::Validations::LengthValidator
+            if validation_applies?(validator.options)
+              {}
+            end
+          when ActiveModel::Validations::NumericalityValidator
+            if validation_applies?(validator.options)
+              { 'data-validates-numericality' => true }
+            end
+          when ActiveModel::Validations::PresenceValidator
+            { 'data-validates-presence' => true }
+        end
+        validations.merge!(validation ||= {})
+      end
+
+      validations
+    end
+
+    def validation_applies?(options)
+      case options[:on]
+        when :create then true if @object.new_record?
+        when :update then true if !@object.new_record?
+        else true
+      end
     end
   end
 end
