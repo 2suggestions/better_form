@@ -44,6 +44,10 @@ module BetterForm
 
     def generate_validations(object, attribute)
       validations = {}
+
+      # Don't try to add validations for an object that doesn't have _validators
+      return {} unless object.respond_to?(:_validators)
+
       # Iterate over each validator for this attribute, and add the appropriate HTML5 data-* attributes
       object._validators[attribute].each do |validator|
         validation = case validator
