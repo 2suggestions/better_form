@@ -52,7 +52,7 @@ module BetterForm
 
       # Iterate over each validator for this attribute, and add the appropriate HTML5 data-* attributes
       object._validators[attribute].each do |validator|
-        @options = validator.options
+        @validation_options = validator.options
         validation = case validator
           when ActiveModel::Validations::AcceptanceValidator
             if validation_applies?
@@ -88,7 +88,7 @@ module BetterForm
     end
 
     def validation_applies?
-      case @options[:on]
+      case @validation_options[:on]
         when :create then true if @object.new_record?
         when :update then true if !@object.new_record?
         else true
@@ -96,7 +96,7 @@ module BetterForm
     end
 
     def validation_message(suffix = 'is invalid')
-      @options[:message] ? @options[:message] : "#{@attribute.to_s.humanize} #{suffix}"
+      @validation_options[:message] ? @validation_options[:message] : "#{@attribute.to_s.humanize} #{suffix}"
     end
   end
 end
