@@ -9,14 +9,21 @@ module BetterForm
         validations = generate_validations(@object, field_name)
         options.merge!(validations)
         label = options.delete(:label)
+
+        unless @object.errors[field_name].blank?
+          css_classes = options.delete(:class)
+          options.merge!({ :class => "#{css_classes} invalid" })
+          error_message = generate_error(field_name)
+        end
+
         if label == false
-          super(field_name, *(args << options))
+          super(field_name, *(args << options)) + error_message
         elsif label
-          generate_label(field_type, field_name, label) + super(field_name, *(args << options))
+          generate_label(field_type, field_name, label) + super(field_name, *(args << options)) + error_message
         elsif @template.label_all? == false
-          super(field_name, *(args << options))
+          super(field_name, *(args << options)) + error_message
         else
-          generate_label(field_type, field_name, label) + super(field_name, *(args << options))
+          generate_label(field_type, field_name, label) + super(field_name, *(args << options)) + error_message
         end
       end
     end
@@ -41,6 +48,12 @@ module BetterForm
 
       options = { :class => :inline } if %w(check_box radio_button).include?(field_type)
       label(method, label_text, options ||= {})
+    end
+
+    def generate_error(field_name)
+      error_messages = []
+      @object.errors[field_name].each { |error| error_messages << "#{field_name.to_s.humanize} #{error}" }
+      content_tag(:span, error_messages.join(', and '), :class => :error_message)
     end
 
     def generate_validations(object, attribute)
