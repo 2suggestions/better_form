@@ -51,9 +51,7 @@ module BetterForm
     end
 
     def generate_error(field_name)
-      error_messages = []
-      @object.errors[field_name].each { |error| error_messages << "#{field_name.to_s.humanize} #{error}" }
-      content_tag(:span, error_messages.join(', and '), :class => :error_message)
+      content_tag(:span, @object.errors[field_name].join(tag(:br)).html_safe, :class => :error_message)
     end
 
     def generate_validations(object, attribute)
