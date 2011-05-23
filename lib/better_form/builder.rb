@@ -5,10 +5,14 @@ module BetterForm
     helpers = field_helpers + %w(date_select datetime_select time_select collection_select select time_zone_select) - %w(label hidden_field fields_for)
     helpers.each do |field_type|
       define_method(field_type) do |field_name, *args|
-        # Extract the options hash and remove the label and validate options
+        # Extract the options hash and remove the better_form-specific options
         options = args.extract_options!
+        prefix = options.delete(:prefix) || ''
+        suffix = options.delete(:suffix) || ''
         label = options.delete(:label)
         validate = options.delete(:validate)
+
+        error_message = ''
 
         # If this field is explicitly validated, or this field and the whole form aren't explicitly *not* validated
         if validate or (validate != false and @template.validate_all? != false)
@@ -26,13 +30,13 @@ module BetterForm
 
         # Generate the field, adding a label where appropriate
         if label == false
-          super(field_name, *(args << options)) + error_message
+          prefix + super(field_name, *(args << options)) + suffix + error_message
         elsif label
-          generate_label(field_type, field_name, label) + super(field_name, *(args << options)) + error_message
+          generate_label(field_type, field_name, label) + prefix + super(field_name, *(args << options)) + suffix + error_message
         elsif @template.label_all? == false
-          super(field_name, *(args << options)) + error_message
+          prefix + super(field_name, *(args << options)) + suffix + error_message
         else
-          generate_label(field_type, field_name, label) + super(field_name, *(args << options)) + error_message
+          generate_label(field_type, field_name, label) + prefix + super(field_name, *(args << options)) + suffix + error_message
         end
       end
     end
