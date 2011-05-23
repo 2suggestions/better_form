@@ -7,12 +7,12 @@ module BetterForm
       define_method(field_type) do |field_name, *args|
         # Extract the options hash and remove the better_form-specific options
         options = args.extract_options!
-        prefix = options.delete(:prefix) || ''
-        suffix = options.delete(:suffix) || ''
+        prefix = options.delete(:prefix) || ''.html_safe
+        suffix = options.delete(:suffix) || ''.html_safe
         label = options.delete(:label)
         validate = options.delete(:validate)
 
-        error_message = ''
+        error_message = ''.html_safe
 
         # If this field is explicitly validated, or this field and the whole form aren't explicitly *not* validated
         if validate or (validate != false and @template.validate_all? != false)
@@ -32,7 +32,7 @@ module BetterForm
         if label != false or (!defined?(label) and @template.label_all?)
           label = generate_label(field_type, field_name, label)
         else
-          label = ''
+          label = ''.html_safe
         end
 
         return label + prefix + super(field_name, *(args << options)) + suffix + error_message
