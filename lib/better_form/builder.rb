@@ -28,16 +28,14 @@ module BetterForm
           end
         end
 
-        # Generate the field, adding a label where appropriate
-        if label == false
-          prefix + super(field_name, *(args << options)) + suffix + error_message
-        elsif label
-          generate_label(field_type, field_name, label) + prefix + super(field_name, *(args << options)) + suffix + error_message
-        elsif @template.label_all? == false
-          prefix + super(field_name, *(args << options)) + suffix + error_message
+        # Generate a label if necessary
+        if label != false or (!defined?(label) and @template.label_all?)
+          label = generate_label(field_type, field_name, label)
         else
-          generate_label(field_type, field_name, label) + prefix + super(field_name, *(args << options)) + suffix + error_message
+          label = ''
         end
+
+        return label + prefix + super(field_name, *(args << options)) + suffix + error_message
       end
     end
 
