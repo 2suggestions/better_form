@@ -5,10 +5,13 @@ module BetterForm
     helpers = field_helpers + %w(date_select datetime_select time_select collection_select select time_zone_select) - %w(label hidden_field fields_for)
     helpers.each do |field_type|
       define_method(field_type) do |field_name, *args|
-        # Extract the options hash and remove the better_form-specific options
         options = args.extract_options!
-        prefix = options.delete(:prefix) || ''.html_safe
-        suffix = options.delete(:suffix) || ''.html_safe
+
+        # Extract the prefix and suffix (if any), and make them html_safe
+        prefix = (options.delete(:prefix) || '').html_safe
+        suffix = (options.delete(:suffix) || '').html_safe
+
+        # Extract the label argument and validate argument
         label = options.delete(:label)
         validate = options.delete(:validate)
 
@@ -35,7 +38,11 @@ module BetterForm
           label = ''.html_safe
         end
 
-        return label + prefix + super(field_name, *(args << options)) + suffix + error_message
+        # Generate the field itself
+        field = super(field_name, *(args << options))
+
+        # Join all the parts together to make a better form field!
+        return label + content_tag(:span, prefix + field + suffix) + error_message
       end
     end
 
