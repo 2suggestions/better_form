@@ -32,7 +32,7 @@ module BetterForm
         end
 
         # Generate a label if necessary
-        if label != false or (!defined?(label) and @template.label_all?)
+        if label != false and @template.label_all != false
           label = generate_label(field_type, field_name, label)
         else
           label = ''.html_safe
