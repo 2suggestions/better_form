@@ -10,6 +10,7 @@ module BetterForm
         # Extract the prefix and suffix (if any), and make them html_safe
         prefix = (options.delete(:prefix) || '').html_safe
         suffix = (options.delete(:suffix) || '').html_safe
+        description = (options.delete(:description) || '').html_safe
 
         # Extract the label argument and validate argument
         label = options.delete(:label)
@@ -32,7 +33,7 @@ module BetterForm
         end
 
         # Generate a label if necessary
-        if label != false and @template.label_all != false
+        if label != false and @template.label_all? != false
           label = generate_label(field_type, field_name, label)
         else
           label = ''.html_safe
@@ -41,8 +42,11 @@ module BetterForm
         # Generate the field itself
         field = super(field_name, *(args << options))
 
+        # Generate the field description
+        description = generate_description(description)
+
         # Join all the parts together to make a better form field!
-        return label + content_tag(:span, prefix + field + suffix) + error_message
+        return label + content_tag(:span, prefix + field + suffix + description) + error_message
       end
     end
 
@@ -66,6 +70,10 @@ module BetterForm
 
       options = { :class => :inline } if %w(check_box radio_button).include?(field_type)
       label(method, label_text, options ||= {})
+    end
+
+    def generate_description(description)
+      content_tag(:span, description, :class => 'field-desc') unless description.blank?
     end
 
     def generate_error(field_name)
