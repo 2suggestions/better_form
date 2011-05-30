@@ -6,25 +6,47 @@ module BetterForm
     helpers.each do |field_type|
       define_method(field_type) do |field_name, *args|
         options = args.extract_options!
-        validations = generate_validations(@object, field_name)
-        options.merge!(validations)
+
+        # Extract the prefix and suffix (if any), and make them html_safe
+        prefix = (options.delete(:prefix) || '').html_safe
+        suffix = (options.delete(:suffix) || '').html_safe
+        description = (options.delete(:description) || '').html_safe
+
+        # Extract the label argument and validate argument
         label = options.delete(:label)
+        validate = options.delete(:validate)
 
-        unless @object.errors[field_name].blank?
-          css_classes = options.delete(:class)
-          options.merge!({ :class => "#{css_classes} invalid" })
-          error_message = generate_error(field_name)
+        error_message = ''.html_safe
+
+        # If this field is explicitly validated, or this field and the whole form aren't explicitly *not* validated
+        if validate or (validate != false and @template.validate_all? != false)
+          # Generate validations for the field
+          validations = generate_validations(@object, field_name)
+          options.merge!(validations)
+
+          # Add an 'invalid' class to it if it has errors
+          unless @object.errors[field_name].blank?
+            css_classes = options.delete(:class)
+            options.merge!({ :class => "#{css_classes} invalid" })
+            error_message = generate_error(field_name)
+          end
         end
 
-        if label == false
-          super(field_name, *(args << options)) + error_message
-        elsif label
-          generate_label(field_type, field_name, label) + super(field_name, *(args << options)) + error_message
-        elsif @template.label_all? == false
-          super(field_name, *(args << options)) + error_message
+        # Generate a label if necessary
+        if label != false and @template.label_all? != false
+          label = generate_label(field_type, field_name, label)
         else
-          generate_label(field_type, field_name, label) + super(field_name, *(args << options)) + error_message
+          label = ''.html_safe
         end
+
+        # Generate the field itself
+        field = super(field_name, *(args << options))
+
+        # Generate the field description
+        description = generate_description(description)
+
+        # Join all the parts together to make a better form field!
+        return label + content_tag(:span, prefix + field + suffix + description) + error_message
       end
     end
 
@@ -48,6 +70,10 @@ module BetterForm
 
       options = { :class => :inline } if %w(check_box radio_button).include?(field_type)
       label(method, label_text, options ||= {})
+    end
+
+    def generate_description(description)
+      content_tag(:span, description, :class => 'field-desc') unless description.blank?
     end
 
     def generate_error(field_name)
