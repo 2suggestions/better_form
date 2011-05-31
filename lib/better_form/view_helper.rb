@@ -15,6 +15,17 @@ module BetterForm
       form_for(record_or_name_or_array, *(args << options), &proc)
     end
 
+    def better_fields_for(record_or_name_or_array, *args, &proc)
+      options = args.extract_options!.reverse_merge(:builder => BetterForm::Builder)
+
+      # Extract the better_form specific 'label' and 'validate_all' options
+      @label_all = options.delete(:label)
+      @validate_all = options.delete(:validate)
+
+      # Call the standard Rails fields_for with our updated options
+      fields_for(record_or_name_or_array, *(args << options), &proc)
+    end
+
     def label_all?
       @label_all
     end
