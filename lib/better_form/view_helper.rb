@@ -2,6 +2,7 @@ module BetterForm
   module ViewHelper
     def better_form_for(record_or_name_or_array, *args, &proc)
       options = args.extract_options!.reverse_merge(:builder => BetterForm::Builder)
+      options[:html] ||= {}
 
       # Call apply_form_for_options! here to have Rails set the class, id and method for the form as usual
       # We need to call this here (rather than implicitly through the later form_for call) because
@@ -10,7 +11,6 @@ module BetterForm
       apply_form_for_options!(record_or_name_or_array, options)
 
       # Add the class 'better_form' to the list of classes for this form
-      options[:html] ||= {}
       options[:html][:class] = "#{options[:html][:class]} better_form"
 
       # Extract the better_form specific 'label' and 'validate_all' options
