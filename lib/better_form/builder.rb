@@ -46,7 +46,7 @@ module BetterForm
         description = generate_description(description)
 
         # Join all the parts together to make a better form field!
-        return label + content_tag(:span, prefix + field + suffix + description) + error_message
+        better_form_field(:label => label, :prefix => prefix, :field => field, :suffix => suffix, :description => description, :error_message => error_message)
       end
     end
 
@@ -58,6 +58,10 @@ module BetterForm
       else
         super(value, options)
       end
+    end
+
+    def better_form_field(field)
+      field[:label] + content_tag(:span, field[:prefix] + field[:field] + field[:suffix] + field[:description]) + field[:error_message]
     end
 
   private
