@@ -1,4 +1,8 @@
 module BetterForm
+  # Raised when the better_form initializer has not been installed
+  class InstallationError < StandardError
+  end
+
   class Builder < ActionView::Helpers::FormBuilder
     helpers = field_helpers + %w(date_select datetime_select time_select collection_select select time_zone_select) - %w(label hidden_field fields_for)
     helpers.each do |field_type|
