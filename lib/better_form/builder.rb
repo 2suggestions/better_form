@@ -1,89 +1,41 @@
 module BetterForm
   class Builder < ActionView::Helpers::FormBuilder
-    include ActionView::Helpers::UrlHelper
-
     helpers = field_helpers + %w(date_select datetime_select time_select collection_select select time_zone_select) - %w(label hidden_field fields_for)
     helpers.each do |field_type|
       define_method(field_type) do |field_name, *args|
         options = args.extract_options!
 
-        # Extract the prefix and suffix (if any), and make them html_safe
-        prefix = (options.delete(:prefix) || '').html_safe
-        suffix = (options.delete(:suffix) || '').html_safe
-        description = (options.delete(:description) || '').html_safe
-
-        # Extract the label argument and validate argument
-        label = options.delete(:label)
-        validate = options.delete(:validate)
-
-        error_message = ''.html_safe
+        error_messages = @object.errors[field_name]
 
         # If this field is explicitly validated, or this field and the whole form aren't explicitly *not* validated
+        validate = options.delete(:validate)
         if validate or (validate != false and @template.validate_all? != false)
           # Generate validations for the field
           validations = generate_validations(@object, field_name)
           options.merge!(validations)
-
-          # Add an 'invalid' class to it if it has errors
-          unless @object.errors[field_name].blank?
-            css_classes = options.delete(:class)
-            options.merge!({ :class => "#{css_classes} invalid" })
-            error_message = generate_error(field_name)
-          end
         end
 
-        # Generate a label if necessary
-        if (label == false) or (label == nil and @template.label_all? == false)
-          label = ''.html_safe
+        # Generate label_text if necessary, or set it to nil if we're not labelling this field
+        label = options.delete(:label)
+        if (options[:label] == false) or (options[:label] == nil and @template.label_all? == false)
+          options[:label_text] = nil
         else
-          label = generate_label(field_type, field_name, label)
+          options[:label_text] ||= method.to_s.humanize
         end
 
         # Generate the field itself
         field = super(field_name, *(args << options))
 
-        # Generate the field description
-        description = generate_description(description)
-
         # Join all the parts together to make a better form field!
-        better_form_field(:label => label, :prefix => prefix, :field => field, :suffix => suffix, :description => description, :error_message => error_message)
+        better_form_field(field, error_messages, options)
       end
     end
 
-    def submit(options = {})
-      value = options.delete(:value)
-      cancel_url = options.delete(:cancel)
-      if cancel_url
-        super(value, options) + "<span class='cancel'>or #{link_to('Cancel', cancel_url)}</span>".html_safe
-      else
-        super(value, options)
-      end
-    end
-
-    def better_form_field(field)
-      field[:label] + content_tag(:span, field[:prefix] + field[:field] + field[:suffix] + field[:description]) + field[:error_message]
+    def better_form_field(field, error_messages, options)
+      raise BetterForm::InstallationError, "You need to run `rails generate better_form` before you can use better_form"
     end
 
   private
-    def generate_label(field_type, method, label)
-      if label == true
-        label_text = method.to_s.gsub(/_/, ' ').capitalize
-      else
-        label_text = label.to_s
-      end
-
-      options = { :class => :inline } if %w(check_box radio_button).include?(field_type)
-      label(method, label_text, options ||= {})
-    end
-
-    def generate_description(description)
-      content_tag(:span, description, :class => 'field-desc') unless description.blank?
-    end
-
-    def generate_error(field_name)
-      content_tag(:span, @object.errors[field_name].join(tag(:br)).html_safe, :class => :error_message)
-    end
-
     def generate_validations(object, attribute)
       validations = {}
       @attribute = attribute
