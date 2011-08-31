@@ -20,7 +20,7 @@ module BetterForm
         if (options[:label] == false) or (options[:label] == nil and @template.label_all? == false)
           options[:label_text] = nil
         else
-          options[:label_text] ||= method.to_s.humanize
+          options[:label_text] ||= field_name.to_s.humanize
         end
 
         # Generate the field itself
