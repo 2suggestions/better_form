@@ -148,3 +148,11 @@ You can set the default for the entire form in the same way. Field-level `:label
 
     <label for='user_password'>Pick a strong password</label>
     <input type='password' id='user_password' name='user[password]' />
+
+Troubleshooting
+===============
+
+If you get a `BetterForm::InstallationError`, you need to run `rails generate better_form`. This installs an initializer that overrides a method
+in `better_form` and lets you customize the handling of your field partial.
+
+You will need to restart WEBrick after running the generator so that the initializer is loaded.
