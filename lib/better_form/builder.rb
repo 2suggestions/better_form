@@ -36,7 +36,7 @@ module BetterForm
     end
 
     def better_form_field(field, error_messages, options)
-      raise BetterForm::InstallationError, "You need to run `rails generate better_form` before you can use better_form"
+      raise BetterForm::InstallationError, "You need to run `rails generate better_form` and restart WEBrick before you can use better_form"
     end
 
   private
