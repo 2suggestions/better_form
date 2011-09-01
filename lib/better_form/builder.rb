@@ -28,10 +28,10 @@ module BetterForm
         end
 
         # Generate the field itself
-        field = super(field_name, *(args << options))
+        form_field = super(field_name, *(args << options))
 
         # Join all the parts together to make a better form field!
-        better_form_field(field, error_messages, options)
+        better_form_field(form_field, error_messages, options)
       end
     end
 
