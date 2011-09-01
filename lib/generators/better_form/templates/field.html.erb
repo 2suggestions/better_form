@@ -16,15 +16,13 @@
   some other condition.
 %>
 
-<div>
-  <%= field[:label] %>
+<div class="form_field">
+  <%= generated_label %>
   <span>
-    <%= options[:prefix] %>
+    <span class="field_prefix"><%= options[:prefix] %></span>
     <%= form_field %>
-    <%= options[:suffix] %>
-    <span class="field-desc">
-      <%= options[:description] %>
-    </span>
+    <span class="field_suffix"><%= options[:suffix] %></span>
+    <span class="field_description"><%= options[:description] %></span>
   </span>
   <% error_messages.each do |message| %>
     <span class="error_message"><%= message %></span>

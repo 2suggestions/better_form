@@ -21,25 +21,35 @@ module BetterForm
 
         # Generate label_text if necessary, or set it to nil if we're not labelling this field
         label = options.delete(:label)
-        if (options[:label] == false) or (options[:label] == nil and @template.label_all? == false)
-          options[:label_text] = nil
+        if (label == false) or (label == nil and @template.label_all? == false)
+          generated_label = nil
         else
-          options[:label_text] ||= field_name.to_s.humanize
+          generated_label = generate_label(field_name, label)
         end
 
         # Generate the field itself
         form_field = super(field_name, *(args << options))
 
         # Join all the parts together to make a better form field!
-        better_form_field(form_field, error_messages, options)
+        better_form_field(form_field, field_type, generated_label, error_messages, options)
       end
     end
 
-    def better_form_field(field, error_messages, options)
+    def better_form_field(form_field, field_type, generated_label, error_messages, options)
       raise BetterForm::InstallationError, "You need to run `rails generate better_form` and restart WEBrick before you can use better_form"
     end
 
   private
+    def generate_label(field_name, label)
+      if label == true
+        label_text = field_name.to_s.humanize
+      else
+        label_text = label.to_s
+      end
+
+      label(field_name, label_text)
+    end
+
     def generate_validations(object, attribute)
       validations = {}
       @attribute = attribute
