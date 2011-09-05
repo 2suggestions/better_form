@@ -1,0 +1,11 @@
+<div class="form_field">
+  <%= form_field %>
+  <span>
+    <%= generated_label %>
+    <span class="field_description"><%= options[:description] %></span>
+  </span>
+  <% error_messages.each do |message| %>
+    <span class="error_message"><%= message %></span>
+    <br />
+  <% end %>
+</div>
