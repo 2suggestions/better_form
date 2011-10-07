@@ -12,6 +12,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   # If you need to check in files that aren't .rb files, add them here
-  s.files        = Dir["{lib}/**/*.rb", "bin/*", "LICENSE", "*.md"]
+  s.files        = Dir["{lib}/**/*", "bin/*", "LICENSE", "*.md"]
   s.require_path = 'lib'
 end

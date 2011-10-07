@@ -1,0 +1,31 @@
+<%#
+  This is the default partial created when you run `rails generate better_form`
+  Modify it as you see fit to support the functionality you need and generate
+  the markup you desire.
+
+  You can replace this partial entirely with your own HAML version.
+
+  Any options passed to the Rails form helper will be available in the
+  `options` local variable. For example, to set options[:prefix] and
+  options[:suffix]:
+
+  f.text_field :amount, :prefix => '$', :suffix => '/hour'
+
+  You can also edit the initializer in config/initializers/better_form.rb. You
+  might like to do this to render different partials based on the field type or
+  some other condition.
+%>
+
+<div class="form_field">
+  <%= generated_label %>
+  <span>
+    <span class="field_prefix"><%= options[:prefix] %></span>
+    <%= form_field %>
+    <span class="field_suffix"><%= options[:suffix] %></span>
+    <span class="field_description"><%= options[:description] %></span>
+  </span>
+  <% error_messages.each do |message| %>
+    <span class="error_message"><%= message %></span>
+    <br />
+  <% end %>
+</div>
