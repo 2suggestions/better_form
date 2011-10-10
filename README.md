@@ -33,6 +33,13 @@ Generate the required initializer and boilerplate form field partial:
 
 Use the `better_form_for` method to create a better form, and add fields using the default Rails form helpers.
 
+Add `better_form` to your `application.js` manifest file (requires jQuery and Coffeescript):
+
+    // Add this to app/assets/javascripts/application.js
+    //= require better_form
+
+You might want to customize this file (found in `vendor/assets/javascripts/better_form.js.coffee`) to change the error message markup.
+
 Customizing your form fields
 ============================
 
@@ -156,3 +163,5 @@ If you get a `BetterForm::InstallationError`, you need to run `rails generate be
 in `better_form` and lets you customize the handling of your field partial.
 
 You will need to restart WEBrick after running the generator so that the initializer is loaded.
+
+If your javascript validation isn't working, make sure that you're including the `better_form` javascript (found in `vendor/assets/javascripts/better_form.js.coffee`) in your `application.js` manifest.
